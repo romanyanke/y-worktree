@@ -16,6 +16,7 @@ const HINTS: [string, string][] = [
   ['/', 'filter'],
   ['p', 'prune'],
   ['r', 'refresh'],
+  ['?', 'help'],
   ['q', 'quit'],
 ];
 

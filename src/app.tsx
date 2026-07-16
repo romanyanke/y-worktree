@@ -3,6 +3,7 @@ import { basename, resolve } from 'node:path';
 import { useMemo, useState } from 'react';
 import { ConfirmDialog } from './components/ConfirmDialog.js';
 import { DetailsPane } from './components/DetailsPane.js';
+import { HelpDialog } from './components/HelpDialog.js';
 import { StatusBar } from './components/StatusBar.js';
 import { TextPrompt } from './components/TextPrompt.js';
 import { WorktreeList } from './components/WorktreeList.js';
@@ -14,6 +15,7 @@ import type { Worktree } from './types.js';
 
 type Mode =
   | { kind: 'list' }
+  | { kind: 'help' }
   | { kind: 'filter' }
   | { kind: 'label'; worktree: Worktree }
   | { kind: 'newBranch' }
@@ -125,6 +127,8 @@ export function App({ cwd, gitCommonDir }: Props) {
         setMode({ kind: 'newBranch' });
       } else if (input === '/') {
         setMode({ kind: 'filter' });
+      } else if (input === '?') {
+        setMode({ kind: 'help' });
       } else if (input === 'p') {
         void runOp(async () => {
           await pruneWorktrees(cwd);
@@ -157,6 +161,8 @@ export function App({ cwd, gitCommonDir }: Props) {
         />
         <DetailsPane worktree={current} />
       </Box>
+
+      {mode.kind === 'help' && <HelpDialog onClose={closeDialog} />}
 
       {mode.kind === 'filter' && (
         <TextPrompt
