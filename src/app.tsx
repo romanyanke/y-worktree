@@ -1,4 +1,4 @@
-import { Box, Text, useApp, useInput } from 'ink';
+import { Box, useApp, useInput } from 'ink';
 import { basename, resolve } from 'node:path';
 import { useMemo, useState } from 'react';
 import { ConfirmDialog } from './components/ConfirmDialog.js';
@@ -8,6 +8,7 @@ import { TextPrompt } from './components/TextPrompt.js';
 import { WorktreeList } from './components/WorktreeList.js';
 import { addWorktree, adoptBranch, pruneWorktrees, removeWorktree } from './git.js';
 import { pruneLabels, removeLabel, setLabel } from './labels.js';
+import { useTerminalSize } from './hooks/useTerminalSize.js';
 import { useWorktrees } from './hooks/useWorktrees.js';
 import type { Worktree } from './types.js';
 
@@ -28,6 +29,7 @@ interface Props {
 
 export function App({ cwd, gitCommonDir }: Props) {
   const { exit } = useApp();
+  const { columns, rows } = useTerminalSize();
   const { worktrees, loading, error, refresh } = useWorktrees(cwd, gitCommonDir);
   const [cursor, setCursor] = useState(0);
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -138,15 +140,18 @@ export function App({ cwd, gitCommonDir }: Props) {
 
   const closeDialog = () => setMode({ kind: 'list' });
 
+  const listWidth = Math.max(40, Math.floor(columns * 0.55));
+
   return (
-    <Box flexDirection="column">
-      <Box>
+    <Box flexDirection="column" width={columns} height={rows}>
+      <Box flexGrow={1}>
         <WorktreeList
           worktrees={visible}
           cursor={clampedCursor}
           selected={selected}
           repoName={repoName}
           filter={filter}
+          width={listWidth}
         />
         <DetailsPane worktree={current} />
       </Box>
@@ -295,13 +300,8 @@ export function App({ cwd, gitCommonDir }: Props) {
                 : (message?.text ?? null)
         }
         messageColor={busy || loading ? 'cyan' : error ? 'red' : message?.color}
+        selectedCount={selected.size}
       />
-      {selected.size > 0 && (
-        <Text dimColor>
-          {'  '}
-          {selected.size} selected
-        </Text>
-      )}
     </Box>
   );
 }

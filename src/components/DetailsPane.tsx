@@ -34,7 +34,7 @@ export function DetailsPane({ worktree }: Props) {
   }, [worktree?.path, worktree?.head]);
 
   return (
-    <Box flexDirection="column" borderStyle="single" paddingX={1} minWidth={44} flexGrow={1}>
+    <Box flexDirection="column" borderStyle="single" paddingX={1} flexGrow={1} flexBasis={0}>
       <Text bold color="cyan">
         Details
       </Text>

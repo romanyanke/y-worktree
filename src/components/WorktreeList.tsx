@@ -7,6 +7,7 @@ interface Props {
   selected: Set<string>;
   repoName: string;
   filter: string;
+  width: number;
 }
 
 function statusIndicator(wt: Worktree): { text: string; color: string } {
@@ -22,10 +23,10 @@ function statusIndicator(wt: Worktree): { text: string; color: string } {
   return { text: parts.join(' '), color: changed > 0 ? 'yellow' : 'cyan' };
 }
 
-export function WorktreeList({ worktrees, cursor, selected, repoName, filter }: Props) {
+export function WorktreeList({ worktrees, cursor, selected, repoName, filter, width }: Props) {
   const title = filter ? `Worktrees (${repoName}) — filter: ${filter}` : `Worktrees (${repoName})`;
   return (
-    <Box flexDirection="column" borderStyle="single" paddingX={1} flexGrow={1} minWidth={40}>
+    <Box flexDirection="column" borderStyle="single" paddingX={1} width={width} flexShrink={0}>
       <Text bold color="cyan">
         {title}
       </Text>
@@ -40,17 +41,21 @@ export function WorktreeList({ worktrees, cursor, selected, repoName, filter }: 
         const name = wt.label ?? wt.branch ?? wt.head.slice(0, 7);
         const branch = wt.branch ?? `detached@${wt.head.slice(0, 7)}`;
         const ind = statusIndicator(wt);
+        // border+padding = 4, marker+check+gaps = 7, rest split between columns
+        const contentWidth = Math.max(26, width - 11);
+        const nameWidth = Math.floor(contentWidth * 0.45);
+        const branchWidth = Math.floor(contentWidth * 0.3);
         return (
           <Box key={wt.path} gap={1}>
             <Text color={isCursor ? 'cyan' : undefined}>{marker}</Text>
             <Text color={isSelected ? 'magenta' : 'gray'}>{check}</Text>
-            <Box width={14} flexShrink={0}>
+            <Box width={nameWidth} flexShrink={0}>
               <Text bold={!!wt.label || wt.isMain} color={isCursor ? 'cyan' : wt.label ? 'white' : undefined} wrap="truncate">
                 {name}
                 {wt.isMain ? ' (main)' : ''}
               </Text>
             </Box>
-            <Box width={12} flexShrink={0}>
+            <Box width={branchWidth} flexShrink={0}>
               <Text dimColor wrap="truncate">
                 {branch}
               </Text>
