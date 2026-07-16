@@ -142,8 +142,10 @@ export function App({ cwd, gitCommonDir }: Props) {
 
   const listWidth = Math.max(40, Math.floor(columns * 0.55));
 
+  // One line short of the terminal height: if output reaches the full height,
+  // Ink falls back to clear-screen-per-frame rendering, which flickers.
   return (
-    <Box flexDirection="column" width={columns} height={rows}>
+    <Box flexDirection="column" width={columns} height={rows - 1}>
       <Box flexGrow={1}>
         <WorktreeList
           worktrees={visible}

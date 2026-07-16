@@ -12,4 +12,15 @@ try {
   process.exit(1);
 }
 
-render(<App cwd={cwd} gitCommonDir={gitCommonDir} />);
+const useAltScreen = process.stdout.isTTY;
+if (useAltScreen) {
+  // Alternate screen buffer: full-screen UI that vanishes from scrollback on exit
+  process.stdout.write('\x1b[?1049h\x1b[H');
+}
+
+const app = render(<App cwd={cwd} gitCommonDir={gitCommonDir} />);
+await app.waitUntilExit();
+
+if (useAltScreen) {
+  process.stdout.write('\x1b[?1049l');
+}
