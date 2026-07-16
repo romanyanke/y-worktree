@@ -40,7 +40,7 @@ Run `ywt` inside any git repository (main checkout or a worktree).
 | `m` | **Adopt**: check out the worktree's branch in the main repo. Choose to keep the worktree (it stays on a detached HEAD with all files intact — useful when AI agents keep working there) or delete it |
 | `l` | Set a human-readable label for the worktree (agents create worktrees with dynamic names — label them without renaming). Empty input removes the label |
 | `/` | Filter by label, branch or path |
-| `o` | Open a new terminal window in the worktree folder |
+| `o` | Open a shell in the worktree folder (type `exit` to return to ywt) |
 | `n` | Create a new worktree (existing or new branch) |
 | `?` | Toggle the help overlay |
 | `p` | `git worktree prune` + clean up orphaned labels |

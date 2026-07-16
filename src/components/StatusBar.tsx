@@ -14,7 +14,7 @@ const HINTS: [string, string][] = [
   ['l', 'label'],
   ['n', 'new'],
   ['/', 'filter'],
-  ['o', 'terminal'],
+  ['o', 'shell'],
   ['p', 'prune'],
   ['r', 'refresh'],
   ['?', 'help'],
