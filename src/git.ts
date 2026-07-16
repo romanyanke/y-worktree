@@ -1,4 +1,4 @@
-import { execFile } from 'node:child_process';
+import { execFile, spawn } from 'node:child_process';
 import { promisify } from 'node:util';
 import type { LastCommit, Worktree, WorktreeStatus } from './types.js';
 
@@ -14,6 +14,30 @@ export async function git(args: string[], cwd?: string): Promise<string> {
   } catch (error) {
     const err = error as { stderr?: string; message: string };
     throw new Error(err.stderr?.trim() || err.message);
+  }
+}
+
+/** Open a new terminal window in the given directory. */
+export function openTerminal(path: string): void {
+  if (process.platform === 'darwin') {
+    spawn('open', ['-a', 'Terminal', path], { detached: true, stdio: 'ignore' }).unref();
+  } else if (process.platform === 'win32') {
+    spawn('cmd', ['/c', 'start', 'cmd', '/k', 'cd', '/d', path], {
+      detached: true,
+      stdio: 'ignore',
+    }).unref();
+  } else {
+    // Try common Linux terminal emulators in order.
+    const term = process.env.TERMINAL;
+    const candidates = term ? [term] : ['x-terminal-emulator', 'gnome-terminal', 'konsole', 'xterm'];
+    for (const cmd of candidates) {
+      try {
+        spawn(cmd, ['--working-directory', path], { detached: true, stdio: 'ignore' }).unref();
+        return;
+      } catch {
+        // try next
+      }
+    }
   }
 }
 

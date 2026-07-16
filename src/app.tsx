@@ -7,7 +7,7 @@ import { HelpDialog } from './components/HelpDialog.js';
 import { StatusBar } from './components/StatusBar.js';
 import { TextPrompt } from './components/TextPrompt.js';
 import { WorktreeList } from './components/WorktreeList.js';
-import { addWorktree, adoptBranch, pruneWorktrees, removeWorktree } from './git.js';
+import { addWorktree, adoptBranch, openTerminal, pruneWorktrees, removeWorktree } from './git.js';
 import { pruneLabels, removeLabel, setLabel } from './labels.js';
 import { useTerminalSize } from './hooks/useTerminalSize.js';
 import { useWorktrees } from './hooks/useWorktrees.js';
@@ -129,6 +129,10 @@ export function App({ cwd, gitCommonDir }: Props) {
         setMode({ kind: 'filter' });
       } else if (input === '?') {
         setMode({ kind: 'help' });
+      } else if (input === 'o') {
+        if (!current) return;
+        openTerminal(current.path);
+        notify(`Opened terminal in ${current.path}`, 'green');
       } else if (input === 'p') {
         void runOp(async () => {
           await pruneWorktrees(cwd);

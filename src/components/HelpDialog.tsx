@@ -12,6 +12,7 @@ const COMMANDS: [string, string][] = [
   ['l', 'Set a human-readable label for the worktree. Empty input removes the label'],
   ['n', 'Create a new worktree from an existing or new branch'],
   ['/', 'Filter the list by label, branch or path'],
+  ['o', 'Open a new terminal window in the worktree folder'],
   ['p', 'Prune stale worktrees and orphaned labels (git worktree prune)'],
   ['r', 'Refresh the list'],
   ['?', 'Toggle this help'],
